@@ -1,0 +1,26 @@
+- name: Create directory for Vagrant's GPG key
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Add Vagrant's official GPG key
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    keyring: /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+    state: present
+
+- name: Add Vagrant repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg]
+      https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+    filename: vagrant
+    state: present
+
+- name: Install Vagrant and related packages
+  ansible.builtin.apt:
+    name: vagrant
+    state: present
+    update_cache: yes
+

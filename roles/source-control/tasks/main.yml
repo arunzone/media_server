@@ -1,0 +1,6 @@
+- name: Install git source control
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+

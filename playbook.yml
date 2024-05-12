@@ -1,0 +1,11 @@
+---
+- name: Play for setting up my-osx-setup
+  hosts: all
+  become: true
+
+  roles:
+
+    - source-control
+    - docker
+    - vagrant
+
