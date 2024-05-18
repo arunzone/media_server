@@ -3,7 +3,7 @@
     repo: ppa:phoerious/keepassxc
     state: present
 
-- name: Install Docker and related packages
+- name: Install Keepassxc and related packages
   ansible.builtin.apt:
     name: keepassxc
     state: present
