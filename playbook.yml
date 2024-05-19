@@ -3,6 +3,14 @@
   hosts: all
   become: true
 
+  pre_tasks:
+
+    - name: Ensure ~/.local/bin directory exists
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.local/bin
+        state: directory
+        mode: '755'
+
   roles:
 
     - source-control
