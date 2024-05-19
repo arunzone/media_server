@@ -1,10 +1,8 @@
 #!/bin/bash
+sudo apt update && sudo apt upgrade
+
+source static_ip.sh
 source ssh_server.sh
-sudo sed -i 's/#Port 22/Port '${ssh_port_number}'/' /etc/ssh/sshd_config
-sudo sed -i '/PermitRootLogin prohibit\-password/s/^#//' /etc/ssh/sshd_config
-sudo sed -i '/MaxAuthTries 6/s/^#//' /etc/ssh/sshd_config
-sudo sed -i '/PubkeyAuthentication yes/s/^#//' /etc/ssh/sshd_config
-sudo service ssh restart
 
 sudo apt --assume-yes install python3.12 python3-pip ansible
 echo 'PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
