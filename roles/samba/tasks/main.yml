@@ -25,13 +25,30 @@
     (echo "{{ smb_password }}"; echo "{{ smb_password }}") | smbpasswd -s -a "{{ smb_username }}"
   no_log: true
 
-- name: Ensure share directory exists
+- name: Check filesystem type
+  ansible.builtin.shell: |
+    df -T "{{ smb_share_path }}" | tail -n 1 | awk '{print $2}'
+  register: filesystem_type
+  changed_when: false
+
+- name: Set filesystem facts
+  ansible.builtin.set_fact:
+    is_non_posix_fs: "{{ 'fat' in filesystem_type.stdout.lower() or 'ntfs' in filesystem_type.stdout.lower() or 'exfat' in filesystem_type.stdout.lower() or 'vfat' in filesystem_type.stdout.lower() }}"
+
+- name: Ensure share directory exists (POSIX filesystem)
   ansible.builtin.file:
     path: "{{ smb_share_path }}"
     state: directory
     owner: "{{ smb_username }}"
     group: smbusers
     mode: '0770'
+  when: not is_non_posix_fs
+
+- name: Ensure share directory exists (non-POSIX filesystem)
+  ansible.builtin.file:
+    path: "{{ smb_share_path }}"
+    state: directory
+  when: is_non_posix_fs
 
 - name: Configure smb.conf file
   ansible.builtin.template:

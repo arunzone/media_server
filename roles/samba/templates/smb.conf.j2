@@ -12,7 +12,19 @@ valid users = {{ smb_username }}
 browseable = yes
 writable = yes
 read only = no
+{% if not is_non_posix_fs %}
 create mask = 0770
 directory mask = 0770
 force user = {{ smb_username }}
 force group = smbusers
+{% else %}
+# Settings for non-POSIX filesystems (FAT32, exFAT, NTFS)
+force user = {{ smb_username }}
+map archive = no
+store dos attributes = yes
+# The following options help with performance on non-POSIX filesystems
+strict allocate = no
+allocation roundup size = 4096
+write cache size = 524288
+use sendfile = yes
+{% endif %}
