@@ -1,0 +1,6 @@
+---
+# Default variables for SSH server
+ssh_permit_root_login: "prohibit-password"
+ssh_max_auth_tries: 6
+ssh_pubkey_authentication: "yes"
+ssh_port: 22

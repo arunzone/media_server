@@ -13,6 +13,7 @@
 
   roles:
 
+    - ssh-server
     - source-control
     - docker
     - vagrant

@@ -2,7 +2,6 @@
 sudo apt update && sudo apt upgrade
 
 source static_ip.sh
-source ssh_server.sh
 
 sudo apt --assume-yes install python3.12 python3-pip ansible
 echo 'PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
