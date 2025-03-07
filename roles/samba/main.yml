@@ -1,45 +1,19 @@
 ---
-- name: Prepare for Samba
-hosts: all
+- name: Install and configure Samba
+  hosts: all
+  become: true
   vars_prompt:
-
     - name: smb_username
-      prompt: Enter a username for samba share?
+      prompt: Enter a username for samba share
       private: false
 
     - name: smb_password
-      prompt: Enter samba share password?
+      prompt: Enter samba share password
+      private: true
 
     - name: smb_share_path
-      prompt: Enter samba share path?
-
-  tasks:
+      prompt: Enter samba share path
+      private: false
   
-    - name: Ensure Samba-related packages are installed.
-      ansible.builtin.apt:
-        name: samba
-        state: present
-        update_cache: yes
-    - name: Add samba group
-      ansible.builtin.group:
-        name: smbusers
-        state: present
-    - name: Add user to Docker group
-      ansible.builtin.user:
-        name: "{{ smb_username }}"
-        groups: smbusers
-        append: yes
-        create_home: no
-    - name: Include role
-      ansible.builtin.include_role:
-        name: vladgh.samba.server
-      vars:
-        samba_map_to_guest: Never  
-        samba_shares:
-          - name: publicshare
-            comment: 'Public share, writeable by all members of group ‘users’'
-            public: true
-            write_list: +smbusers
-            group: smbusers
-            browseable: true
-            path: "{{ smb_share_path }}"
+  roles:
+    - role: samba

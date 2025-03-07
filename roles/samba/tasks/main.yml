@@ -1,0 +1,43 @@
+---
+- name: Ensure Samba-related packages are installed
+  ansible.builtin.apt:
+    name: 
+      - samba
+      - samba-common
+      - smbclient
+    state: present
+    update_cache: yes
+
+- name: Create samba group
+  ansible.builtin.group:
+    name: smbusers
+    state: present
+
+- name: Create samba user
+  ansible.builtin.user:
+    name: "{{ smb_username }}"
+    groups: smbusers
+    append: yes
+    state: present
+
+- name: Set samba password for user
+  ansible.builtin.shell: |
+    (echo "{{ smb_password }}"; echo "{{ smb_password }}") | smbpasswd -s -a "{{ smb_username }}"
+  no_log: true
+
+- name: Ensure share directory exists
+  ansible.builtin.file:
+    path: "{{ smb_share_path }}"
+    state: directory
+    owner: "{{ smb_username }}"
+    group: smbusers
+    mode: '0770'
+
+- name: Configure smb.conf file
+  ansible.builtin.template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart samba

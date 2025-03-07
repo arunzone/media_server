@@ -1,0 +1,18 @@
+[global]
+workgroup = WORKGROUP
+server string = Samba Server
+security = user
+map to guest = never
+log file = /var/log/samba/%m.log
+max log size = 50
+
+[{{ smb_username }}_share]
+path = {{ smb_share_path }}
+valid users = {{ smb_username }}
+browseable = yes
+writable = yes
+read only = no
+create mask = 0770
+directory mask = 0770
+force user = {{ smb_username }}
+force group = smbusers
