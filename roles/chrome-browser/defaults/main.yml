@@ -1,0 +1,3 @@
+---
+# Default variables for Chrome browser
+configure_chrome: false  # Set to true if you want to configure Chrome settings
