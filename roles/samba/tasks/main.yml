@@ -58,3 +58,13 @@
     group: root
     mode: '0644'
   notify: restart samba
+
+- name: Allow Samba through UFW
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - '139'
+    - '445'
+  notify: restart samba
