@@ -19,6 +19,7 @@
     - docker
     - vagrant
     - keepassxc
+    - keepass
     - storage-mount
     - samba
     - chrome-browser

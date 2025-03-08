@@ -1,7 +1,7 @@
 ---
 # Default media directories
 plex_movies_directory: "/mnt/MediaStorage/Movies"
-plex_tv_directory: "/mnt/MediaStorage/Shows"
+plex_tv_directory: "/mnt/MediaStorage/TV\ Shows"
 plex_music_directory: "/mnt/MediaStorage/Music"
 plex_photos_directory: "/mnt/MediaStorage/cam"
 

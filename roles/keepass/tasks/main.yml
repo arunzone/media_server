@@ -1,0 +1,34 @@
+---
+# Install KeePass Password Manager (original version)
+
+- name: Install KeePass dependencies
+  ansible.builtin.apt:
+    name:
+      - mono-complete  # Required for running KeePass on Linux
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Install KeePass password manager
+  ansible.builtin.apt:
+    name: keepass2
+    state: present
+  become: true
+
+- name: Create desktop shortcut directory if it doesn't exist
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.local/share/applications"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+  become: true
+
+- name: Create KeePass desktop shortcut
+  ansible.builtin.template:
+    src: keepass.desktop.j2
+    dest: "/home/{{ ansible_user }}/.local/share/applications/keepass.desktop"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  become: true
