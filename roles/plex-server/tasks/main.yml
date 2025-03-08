@@ -22,16 +22,30 @@
     state: started
     enabled: yes
 
-- name: Create Plex media directories if they don't exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: '0755'
+- name: Ensure Plex user exists in required groups
+  ansible.builtin.user:
+    name: plex
+    groups: media,smbusers
+    append: yes
+  become: true
+
+- name: Set ACLs to ensure Plex can read media directories
+  ansible.builtin.shell: "setfacl -m u:plex:rx {{ item }}"
   loop:
+    - "/mnt/MediaStorage"
     - "{{ plex_movies_directory }}"
     - "{{ plex_tv_directory }}"
     - "{{ plex_music_directory }}"
     - "{{ plex_photos_directory }}"
+  become: true
+  changed_when: true
+
+- name: Clear Plex library cache
+  ansible.builtin.file:
+    path: "/var/lib/plexmediaserver/Library/Application Support/Plex Media Server/Cache"
+    state: absent
+  become: true
+  notify: restart plex
 
 - name: Allow Plex through UFW
   ansible.builtin.ufw:
