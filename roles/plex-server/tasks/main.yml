@@ -21,11 +21,26 @@
     creates: /usr/share/keyrings/plexmediaserver.gpg
   become: true
 
-- name: Remove any existing Plex repository configuration
-  ansible.builtin.file:
-    path: "/etc/apt/sources.list.d/plexmediaserver.list"
-    state: absent
+- name: Remove any existing Plex repository configurations
+  ansible.builtin.shell: |
+    rm -f /etc/apt/sources.list.d/plexmediaserver.list
+    grep -l "downloads.plex.tv" /etc/apt/sources.list.d/*.list 2>/dev/null | xargs -r rm -f
+    # Clean up any conflicting entries in the main sources.list
+    sed -i '/downloads\.plex\.tv/d' /etc/apt/sources.list
+  args:
+    warn: false
   become: true
+  changed_when: true
+
+- name: Fix APT cache
+  ansible.builtin.shell: |
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+    apt-get update -o Acquire::AllowInsecureRepositories=true
+  args:
+    warn: false
+  become: true
+  changed_when: true
 
 - name: Add Plex repository
   ansible.builtin.apt_repository:
