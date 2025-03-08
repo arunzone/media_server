@@ -1,12 +1,35 @@
 ---
-- name: Add Plex repository key
-  ansible.builtin.apt_key:
+- name: Create keyring directory
+  ansible.builtin.file:
+    path: /usr/share/keyrings
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Download and install Plex repository key
+  ansible.builtin.get_url:
     url: https://downloads.plex.tv/plex-keys/PlexSign.key
-    state: present
+    dest: /tmp/PlexSign.key
+    mode: '0644'
+  become: true
+
+- name: Import Plex GPG key to keyring
+  ansible.builtin.shell: |
+    cat /tmp/PlexSign.key | gpg --dearmor > /usr/share/keyrings/plexmediaserver.gpg
+    chmod 644 /usr/share/keyrings/plexmediaserver.gpg
+  args:
+    creates: /usr/share/keyrings/plexmediaserver.gpg
+  become: true
+
+- name: Remove any existing Plex repository configuration
+  ansible.builtin.file:
+    path: "/etc/apt/sources.list.d/plexmediaserver.list"
+    state: absent
+  become: true
 
 - name: Add Plex repository
   ansible.builtin.apt_repository:
-    repo: "deb https://downloads.plex.tv/repo/deb public main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/plexmediaserver.gpg] https://downloads.plex.tv/repo/deb public main"
     state: present
     filename: plexmediaserver
 
