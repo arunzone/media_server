@@ -1,20 +1,20 @@
 ---
 - name: Set system hostname
   ansible.builtin.hostname:
-    name: tv_pal
+    name: tv-pal
   become: true
 
 - name: Update /etc/hosts file with both hostnames
   ansible.builtin.blockinfile:
     path: /etc/hosts
     block: |
-      127.0.1.1 tv_pal media
-      192.168.1.100 tv_pal media
+      127.0.1.1 tv-pal media
+      192.168.1.100 tv-pal media
     marker: "# {mark} ANSIBLE MANAGED HOSTNAMES"
   become: true
 
 - name: Apply hostname immediately
-  ansible.builtin.command: hostnamectl set-hostname tv_pal
+  ansible.builtin.command: hostnamectl set-hostname tv-pal
   become: true
   changed_when: false
 
