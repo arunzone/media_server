@@ -17,8 +17,6 @@
             # Clean APT cache
             apt-get clean
             rm -rf /var/lib/apt/lists/*
-          args:
-            warn: false
           changed_when: true
           become: true
 
