@@ -1,0 +1,16 @@
+---
+- name: Ensure mount point directory exists
+  ansible.builtin.file:
+    path: "/mnt/MediaStorage"
+    state: directory
+    mode: '0755'
+
+- name: Add disk to fstab and mount it
+  ansible.builtin.mount:
+    path: "/mnt/MediaStorage"
+    src: "UUID=d06f4a92-a319-4781-8978-6aef6d0874a6"
+    fstype: "ext4"
+    state: mounted
+    opts: "defaults"
+    dump: 0
+    passno: 2

@@ -2,4 +2,4 @@
 # Default variables for Samba
 smb_username: ""
 smb_password: ""
-smb_share_path: ""
+smb_share_path: "/mnt/MediaStorage"

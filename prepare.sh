@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$USER
 sudo apt update && sudo apt upgrade
 
 source static_ip.sh

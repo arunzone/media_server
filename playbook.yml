@@ -18,6 +18,8 @@
     - docker
     - vagrant
     - keepassxc
+    - storage-mount
     - samba
     - chrome-browser
+    - plex-server
 

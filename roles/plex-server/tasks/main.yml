@@ -1,0 +1,52 @@
+---
+- name: Add Plex repository key
+  ansible.builtin.apt_key:
+    url: https://downloads.plex.tv/plex-keys/PlexSign.key
+    state: present
+
+- name: Add Plex repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://downloads.plex.tv/repo/deb public main"
+    state: present
+    filename: plexmediaserver
+
+- name: Install Plex Media Server
+  ansible.builtin.apt:
+    name: plexmediaserver
+    state: present
+    update_cache: yes
+
+- name: Ensure Plex service is enabled and started
+  ansible.builtin.service:
+    name: plexmediaserver
+    state: started
+    enabled: yes
+
+- name: Create Plex media directories if they don't exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ plex_movies_directory }}"
+    - "{{ plex_tv_directory }}"
+    - "{{ plex_music_directory }}"
+    - "{{ plex_photos_directory }}"
+
+- name: Allow Plex through UFW
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - '32400'  # Primary Plex port
+    - '1900'   # DLNA discovery
+    - '3005'   # Plex Companion
+    - '5353'   # Bonjour/Avahi discovery
+    - '8324'   # Roku control
+    - '32410'  # GDM network discovery
+    - '32412'  # GDM network discovery
+    - '32413'  # GDM network discovery
+    - '32414'  # GDM network discovery
+    - '32469'  # DLNA media transfer
+  notify: restart plex
