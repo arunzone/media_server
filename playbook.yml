@@ -13,6 +13,7 @@
 
   roles:
 
+    - hostname
     - ssh-server
     - source-control
     - docker

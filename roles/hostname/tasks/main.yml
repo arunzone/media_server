@@ -1,0 +1,34 @@
+---
+- name: Set system hostname
+  ansible.builtin.hostname:
+    name: tv_pal
+  become: true
+
+- name: Update /etc/hosts file with both hostnames
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    block: |
+      127.0.1.1 tv_pal media
+      192.168.1.100 tv_pal media
+    marker: "# {mark} ANSIBLE MANAGED HOSTNAMES"
+  become: true
+
+- name: Apply hostname immediately
+  ansible.builtin.command: hostnamectl set-hostname tv_pal
+  become: true
+  changed_when: false
+
+# Enable mDNS for network-wide hostname resolution
+- name: Install and enable Avahi for mDNS
+  block:
+    - name: Install Avahi daemon
+      ansible.builtin.apt:
+        name: avahi-daemon
+        state: present
+      
+    - name: Ensure Avahi daemon is running
+      ansible.builtin.service:
+        name: avahi-daemon
+        state: started
+        enabled: yes
+  become: true
