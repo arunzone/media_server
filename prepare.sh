@@ -11,6 +11,7 @@ ansible-galaxy collection install community.general
 source ~/.bashrc
 
 ansible-galaxy collection install -r requirements.yml
+ansible-galaxy role install joenyland.plexmediaserver
 
 ansible-playbook -vvv -i "localhost," --ask-become-pass \
 --extra-vars "ansible_user=media" \

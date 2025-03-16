@@ -1,5 +1,0 @@
----
-- name: restart plex
-  ansible.builtin.service:
-    name: plexmediaserver
-    state: restarted
